@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import bchaddr from "bchaddrjs"
 import coininfo from "coininfo"
@@ -6,18 +5,15 @@ import coininfo from "coininfo"
 class ECPair {
   static fromWIF(privateKeyWIF) {
     let network
-    if (privateKeyWIF[0] === "L" || privateKeyWIF[0] === "K") {
+    if (privateKeyWIF[0] === "L" || privateKeyWIF[0] === "K")
       network = "bitcoincash"
-    } else if (privateKeyWIF[0] === "c") {
-      network = "testnet"
-    }
+    else if (privateKeyWIF[0] === "c") network = "testnet"
+
     let bitcoincash
-    if (network === "bitcoincash") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    if (network === "bitcoincash") bitcoincash = coininfo.bitcoincash.main
+    else bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
 
     return Bitcoin.ECPair.fromWIF(privateKeyWIF, bitcoincashBitcoinJSLib)
   }

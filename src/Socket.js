@@ -1,4 +1,3 @@
-"use strict"
 import io from "socket.io-client"
 
 class Socket {
@@ -10,28 +9,20 @@ class Socket {
       if (config.restURL) {
         this.socket = io(`${config.restURL}`)
       } else {
-        let restURL = "https://rest.bitcoin.com"
+        const restURL = "https://rest.bitcoin.com"
         this.socket = io(`${restURL}`)
       }
 
-      if (config.callback) {
-        config.callback()
-      }
+      if (config.callback) config.callback()
     }
   }
 
   listen(endpoint, cb) {
     this.socket.emit(endpoint)
 
-    if (endpoint === "blocks") {
-      this.socket.on("blocks", msg => {
-        return cb(msg)
-      })
-    } else if (endpoint === "transactions") {
-      this.socket.on("transactions", msg => {
-        return cb(msg)
-      })
-    }
+    if (endpoint === "blocks") this.socket.on("blocks", msg => cb(msg))
+    else if (endpoint === "transactions")
+      this.socket.on("transactions", msg => cb(msg))
   }
 }
 

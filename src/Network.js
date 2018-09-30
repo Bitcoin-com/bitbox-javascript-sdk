@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class Network {
   constructor(restURL) {
@@ -7,7 +6,7 @@ class Network {
 
   async addNode(node, command) {
     try {
-      let response = await axios.post(
+      const response = await axios.post(
         `${this.restURL}network/addNode/${node}/${command}`
       )
       return response.data
@@ -18,7 +17,7 @@ class Network {
 
   async clearBanned() {
     try {
-      let response = await axios.post(`${this.restURL}clearBanned`)
+      const response = await axios.post(`${this.restURL}clearBanned`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -27,7 +26,7 @@ class Network {
 
   async disconnectNode(configuration) {
     try {
-      let response = await axios.post(
+      const response = await axios.post(
         `${this.restURL}disconnectNode/${configuration}`
       )
       return response.data
@@ -38,12 +37,10 @@ class Network {
 
   async getAddedNodeInfo(node) {
     let path = `${this.restURL}network/getAddedNodeInfo`
-    if (node) {
-      path = `${path}?node=${node}`
-    }
+    if (node) path = `${path}?node=${node}`
 
     try {
-      let response = await axios.get(path)
+      const response = await axios.get(path)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -52,7 +49,7 @@ class Network {
 
   async getConnectionCount() {
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}network/getConnectionCount`
       )
       return response.data
@@ -63,7 +60,7 @@ class Network {
 
   async getNetTotals() {
     try {
-      let response = await axios.get(`${this.restURL}network/getNetTotals`)
+      const response = await axios.get(`${this.restURL}network/getNetTotals`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -72,7 +69,7 @@ class Network {
 
   async getNetworkInfo() {
     try {
-      let response = await axios.get(`${this.restURL}network/getNetworkInfo`)
+      const response = await axios.get(`${this.restURL}network/getNetworkInfo`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -81,7 +78,7 @@ class Network {
 
   async getPeerInfo() {
     try {
-      let response = await axios.get(`${this.restURL}network/getPeerInfo`)
+      const response = await axios.get(`${this.restURL}network/getPeerInfo`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -101,7 +98,7 @@ class Network {
 
   async ping() {
     try {
-      let response = await axios.get(`${this.restURL}network/ping`)
+      const response = await axios.get(`${this.restURL}network/ping`)
       return response.data
     } catch (error) {
       throw error.response.data

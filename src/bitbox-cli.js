@@ -1,4 +1,3 @@
-"use strict"
 // 3rd party deps
 import axios from "axios"
 import Bitcoin from "bitcoincashjs-lib"
@@ -26,11 +25,9 @@ import Socket from "./Socket"
 
 class BITBOXCli {
   constructor(config) {
-    if (config && config.restURL && config.restURL !== "") {
+    if (config && config.restURL && config.restURL !== "")
       this.restURL = config.restURL
-    } else {
-      this.restURL = "https://rest.bitcoin.com/v1/"
-    }
+    else this.restURL = "https://rest.bitcoin.com/v1/"
 
     this.Address = new Address(this.restURL)
     this.BitcoinCash = new BitcoinCash()

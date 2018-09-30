@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import bchaddr from "bchaddrjs"
 import coininfo from "coininfo"
@@ -8,12 +7,10 @@ import bip68 from "bip68"
 class TransactionBuilder {
   constructor(network = "bitcoincash") {
     let bitcoincash
-    if (network === "bitcoincash") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    if (network === "bitcoincash") bitcoincash = coininfo.bitcoincash.main
+    else bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
     this.transaction = new Bitcoin.TransactionBuilder(bitcoincashBitcoinJSLib)
     this.DEFAULT_SEQUENCE = 0xffffffff
     this.hashTypes = {
@@ -69,11 +66,9 @@ class TransactionBuilder {
   }
 
   build() {
-    if (this.p2shInput === true) {
-      return this.tx
-    } else {
-      return this.transaction.build()
-    }
+    if (this.p2shInput === true) return this.tx
+
+    return this.transaction.build()
   }
 }
 

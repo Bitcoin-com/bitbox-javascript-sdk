@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import bchaddr from "bchaddrjs"
 import sb from "satoshi-bitcoin"
@@ -9,7 +8,7 @@ import coininfo from "coininfo"
 import bip38 from "bip38"
 import wif from "wif"
 
-let Buffer = require("safe-buffer").Buffer
+const Buffer = require("safe-buffer").Buffer
 
 class BitcoinCash {
   // Translate coins to satoshi value
@@ -52,16 +51,17 @@ class BitcoinCash {
 
   // sign message
   signMessageWithPrivKey(privateKeyWIF, message) {
-    let network = privateKeyWIF.charAt(0) === "c" ? "testnet" : "bitcoincash"
+    const network = privateKeyWIF.charAt(0) === "c" ? "testnet" : "bitcoincash"
     let bitcoincash
-    if (network === "bitcoincash") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
-    let keyPair = Bitcoin.ECPair.fromWIF(privateKeyWIF, bitcoincashBitcoinJSLib)
-    let privateKey = keyPair.d.toBuffer(32)
+    if (network === "bitcoincash") bitcoincash = coininfo.bitcoincash.main
+    else bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    const keyPair = Bitcoin.ECPair.fromWIF(
+      privateKeyWIF,
+      bitcoincashBitcoinJSLib
+    )
+    const privateKey = keyPair.d.toBuffer(32)
     return bitcoinMessage
       .sign(message, privateKey, keyPair.compressed)
       .toString("base64")
@@ -101,7 +101,7 @@ class BitcoinCash {
     let totalWeight = 0
     let hasWitness = false
     // assumes compressed pubkeys in all cases.
-    let types = {
+    const types = {
       inputs: {
         "MULTISIG-P2SH": 49 * 4,
         "MULTISIG-P2WSH": 6 + 41 * 4,
@@ -121,15 +121,15 @@ class BitcoinCash {
     Object.keys(inputs).forEach(function(key) {
       if (key.slice(0, 8) === "MULTISIG") {
         // ex. "MULTISIG-P2SH:2-3" would mean 2 of 3 P2SH MULTISIG
-        let keyParts = key.split(":")
-        if (keyParts.length !== 2) throw new Error("invalid input: " + key)
-        let newKey = keyParts[0]
-        let mAndN = keyParts[1].split("-").map(function(item) {
+        const keyParts = key.split(":")
+        if (keyParts.length !== 2) throw new Error(`invalid input: ${key}`)
+        const newKey = keyParts[0]
+        const mAndN = keyParts[1].split("-").map(function(item) {
           return parseInt(item)
         })
 
         totalWeight += types.inputs[newKey] * inputs[key]
-        let multiplyer = newKey === "MULTISIG-P2SH" ? 4 : 1
+        const multiplyer = newKey === "MULTISIG-P2SH" ? 4 : 1
         totalWeight += (73 * mAndN[0] + 34 * mAndN[1]) * multiplyer
       } else {
         totalWeight += types.inputs[key] * inputs[key]
@@ -149,19 +149,17 @@ class BitcoinCash {
   }
 
   encryptBIP38(privKeyWIF, passphrase) {
-    let decoded = wif.decode(privKeyWIF)
+    const decoded = wif.decode(privKeyWIF)
 
     return bip38.encrypt(decoded.privateKey, decoded.compressed, passphrase)
   }
 
   decryptBIP38(encryptedKey, passphrase, network = "mainnet") {
-    let decryptedKey = bip38.decrypt(encryptedKey, passphrase)
+    const decryptedKey = bip38.decrypt(encryptedKey, passphrase)
     let prefix
-    if (network === "testnet") {
-      prefix = 0xef
-    } else {
-      prefix = 0x80
-    }
+    if (network === "testnet") prefix = 0xef
+    else prefix = 0x80
+
     return wif.encode(prefix, decryptedKey.privateKey, decryptedKey.compressed)
   }
 }

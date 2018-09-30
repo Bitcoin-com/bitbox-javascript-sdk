@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class Util {
   constructor(restURL) {
@@ -7,7 +6,7 @@ class Util {
 
   async validateAddress(address) {
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}util/validateAddress/${address}`
       )
       return response.data

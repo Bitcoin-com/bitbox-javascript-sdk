@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class Generating {
   constructor(restURL) {
@@ -7,7 +6,7 @@ class Generating {
 
   async generateToAddress(blocks, address, maxtries = 1000000) {
     try {
-      let response = await axios.post(
+      const response = await axios.post(
         `${
           this.restURL
         }generating/generateToAddress/${blocks}/${address}?maxtries=${maxtries}`

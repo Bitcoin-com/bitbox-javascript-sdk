@@ -1,11 +1,10 @@
-"use strict"
 import Crypto from "./Crypto"
 
 import BIP39 from "bip39"
 import randomBytes from "randombytes"
 import Bitcoin from "bitcoincashjs-lib"
 import bchaddr from "bchaddrjs"
-let Buffer = require("safe-buffer").Buffer
+const Buffer = require("safe-buffer").Buffer
 
 class Mnemonic {
   generate(bits = 128, wordlist) {
@@ -22,28 +21,25 @@ class Mnemonic {
 
   validate(mnemonic, wordlist) {
     // Preprocess the words
-    let words = mnemonic.split(" ")
+    const words = mnemonic.split(" ")
     // Detect blank phrase
-    if (words.length == 0) {
-      return "Blank mnemonic"
-    }
+    if (words.length === 0) return "Blank mnemonic"
+
     // Check each word
     for (let i = 0; i < words.length; i++) {
-      let word = words[i]
+      const word = words[i]
       if (wordlist.indexOf(word) == -1) {
         // Finding closest match to word
-        let nearestWord = this.findNearestWord(word, wordlist)
+        const nearestWord = this.findNearestWord(word, wordlist)
         return `${word} is not in wordlist, did you mean ${nearestWord}?`
       }
     }
     // Check the words are valid
-    let properPhrase = words.join()
-    let isValid = BIP39.validateMnemonic(mnemonic, wordlist)
-    if (!isValid) {
-      return "Invalid mnemonic"
-    } else {
-      return "Valid mnemonic"
-    }
+    const properPhrase = words.join()
+    const isValid = BIP39.validateMnemonic(mnemonic, wordlist)
+    if (!isValid) return "Invalid mnemonic"
+
+    return "Valid mnemonic"
   }
 
   toSeed(mnemonic, password = "") {
@@ -55,14 +51,14 @@ class Mnemonic {
   }
 
   toKeypairs(mnemonic, numberOfKeypairs = 1) {
-    let rootSeedBuffer = this.toSeed(mnemonic, "")
-    let hdNode = Bitcoin.HDNode.fromSeedBuffer(rootSeedBuffer)
-    let HDPath = `44'/145'/0'/0/`
+    const rootSeedBuffer = this.toSeed(mnemonic, "")
+    const hdNode = Bitcoin.HDNode.fromSeedBuffer(rootSeedBuffer)
+    const HDPath = `44'/145'/0'/0/`
 
-    let accounts = []
+    const accounts = []
 
     for (let i = 0; i < numberOfKeypairs; i++) {
-      let childHDNode = hdNode.derivePath(`${HDPath}${i}`)
+      const childHDNode = hdNode.derivePath(`${HDPath}${i}`)
       accounts.push({
         privateKeyWIF: childHDNode.keyPair.toWIF(),
         address: bchaddr.toCashAddress(childHDNode.getAddress())
@@ -75,11 +71,10 @@ class Mnemonic {
     let minDistance = 99
     let closestWord = wordlist[0]
     for (let i = 0; i < wordlist.length; i++) {
-      let comparedTo = wordlist[i]
-      if (comparedTo.indexOf(word) == 0) {
-        return comparedTo
-      }
-      let distance = Levenshtein.get(word, comparedTo)
+      const comparedTo = wordlist[i]
+      if (comparedTo.indexOf(word) == 0) return comparedTo
+
+      const distance = Levenshtein.get(word, comparedTo)
       if (distance < minDistance) {
         closestWord = comparedTo
         minDistance = distance
@@ -103,13 +98,11 @@ export default Mnemonic
  * @return Object the final object.
  */
 
-var _extend = function(dst) {
-  var sources = Array.prototype.slice.call(arguments, 1)
-  for (var i = 0; i < sources.length; ++i) {
-    var src = sources[i]
-    for (var p in src) {
-      if (src.hasOwnProperty(p)) dst[p] = src[p]
-    }
+const _extend = function(dst) {
+  const sources = Array.prototype.slice.call(arguments, 1)
+  for (let i = 0; i < sources.length; ++i) {
+    const src = sources[i]
+    for (const p in src) if (src.hasOwnProperty(p)) dst[p] = src[p]
   }
   return dst
 }
@@ -118,12 +111,10 @@ var _extend = function(dst) {
  * Defer execution of given function.
  * @param  {Function} func
  */
-var _defer = function(func) {
-  if (typeof setImmediate === "function") {
-    return setImmediate(func)
-  } else {
-    return setTimeout(func, 0)
-  }
+const _defer = function(func) {
+  if (typeof setImmediate === "function") return setImmediate(func)
+
+  return setTimeout(func, 0)
 }
 
 /**
@@ -144,7 +135,7 @@ var Levenshtein = {
     if (str2.length === 0) return str1.length
 
     // two rows
-    var prevRow = new Array(str2.length + 1),
+    let prevRow = new Array(str2.length + 1),
       curCol,
       nextCol,
       i,
@@ -152,9 +143,7 @@ var Levenshtein = {
       tmp
 
     // initialise previous row
-    for (i = 0; i < prevRow.length; ++i) {
-      prevRow[i] = i
-    }
+    for (i = 0; i < prevRow.length; ++i) prevRow[i] = i
 
     // calculate current row distance from previous row
     for (i = 0; i < str1.length; ++i) {
@@ -167,14 +156,11 @@ var Levenshtein = {
         nextCol = prevRow[j] + (str1.charAt(i) === str2.charAt(j) ? 0 : 1)
         // insertion
         tmp = curCol + 1
-        if (nextCol > tmp) {
-          nextCol = tmp
-        }
+        if (nextCol > tmp) nextCol = tmp
+
         // deletion
         tmp = prevRow[j + 1] + 1
-        if (nextCol > tmp) {
-          nextCol = tmp
-        }
+        if (nextCol > tmp) nextCol = tmp
 
         // copy current col value into previous (in preparation for next iteration)
         prevRow[j] = curCol
@@ -211,7 +197,7 @@ var Levenshtein = {
     if (str2.length === 0) return cb(null, str1.length)
 
     // two rows
-    var prevRow = new Array(str2.length + 1),
+    let prevRow = new Array(str2.length + 1),
       curCol,
       nextCol,
       i,
@@ -221,9 +207,7 @@ var Levenshtein = {
       currentTime
 
     // initialise previous row
-    for (i = 0; i < prevRow.length; ++i) {
-      prevRow[i] = i
-    }
+    for (i = 0; i < prevRow.length; ++i) prevRow[i] = i
 
     nextCol = 1
     i = 0
@@ -242,14 +226,12 @@ var Levenshtein = {
           prevRow[j] = nextCol
 
           // if already done all chars
-          if (str1.length <= ++i) {
-            return cb(null, nextCol)
-          }
+          if (str1.length <= ++i) return cb(null, nextCol)
+
           // else if we have more left to do
-          else {
-            nextCol = i + 1
-            j = 0
-          }
+
+          nextCol = i + 1
+          j = 0
         }
 
         // calculation
@@ -259,14 +241,11 @@ var Levenshtein = {
         nextCol = prevRow[j] + (str1.charAt(i) === str2.charAt(j) ? 0 : 1)
         // insertion
         tmp = curCol + 1
-        if (nextCol > tmp) {
-          nextCol = tmp
-        }
+        if (nextCol > tmp) nextCol = tmp
+
         // deletion
         tmp = prevRow[j + 1] + 1
-        if (nextCol > tmp) {
-          nextCol = tmp
-        }
+        if (nextCol > tmp) nextCol = tmp
 
         // copy current into previous (in preparation for next iteration)
         prevRow[j] = curCol
@@ -280,7 +259,7 @@ var Levenshtein = {
         try {
           options.progress.call(null, (i * 100.0) / str1.length)
         } catch (err) {
-          return cb("Progress callback: " + err.toString())
+          return cb(`Progress callback: ${err.toString()}`)
         }
       }
 

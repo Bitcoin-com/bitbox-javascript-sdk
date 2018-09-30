@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class RawTransactions {
   constructor(restURL) {
@@ -6,12 +5,10 @@ class RawTransactions {
   }
 
   async decodeRawTransaction(hex) {
-    if (typeof hex !== "string") {
-      hex = JSON.stringify(hex)
-    }
+    if (typeof hex !== "string") hex = JSON.stringify(hex)
 
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}rawtransactions/decodeRawTransaction/${hex}`
       )
       return response.data
@@ -21,12 +18,10 @@ class RawTransactions {
   }
 
   async decodeScript(script) {
-    if (typeof script !== "string") {
-      script = JSON.stringify(script)
-    }
+    if (typeof script !== "string") script = JSON.stringify(script)
 
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}rawtransactions/decodeScript/${script}`
       )
       return response.data
@@ -36,12 +31,10 @@ class RawTransactions {
   }
 
   async getRawTransaction(txid, verbose = false) {
-    if (typeof txid !== "string") {
-      txid = JSON.stringify(txid)
-    }
+    if (typeof txid !== "string") txid = JSON.stringify(txid)
 
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${
           this.restURL
         }rawtransactions/getRawTransaction/${txid}?verbose=${verbose}`
@@ -53,12 +46,10 @@ class RawTransactions {
   }
 
   async sendRawTransaction(hex, allowhighfees = false) {
-    if (typeof hex !== "string") {
-      hex = JSON.stringify(hex)
-    }
+    if (typeof hex !== "string") hex = JSON.stringify(hex)
 
     try {
-      let response = await axios.post(
+      const response = await axios.post(
         `${
           this.restURL
         }rawtransactions/sendRawTransaction/${hex}?allowhighfees=${allowhighfees}`

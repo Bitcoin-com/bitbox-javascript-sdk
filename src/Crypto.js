@@ -1,4 +1,3 @@
-"use strict"
 import randomBytes from "randombytes"
 import Bitcoin from "bitcoincashjs-lib"
 

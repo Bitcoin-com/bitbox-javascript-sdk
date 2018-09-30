@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import axios from "axios"
 
@@ -24,12 +23,10 @@ class Transaction {
   }
 
   async details(txid) {
-    if (typeof txid !== "string") {
-      txid = JSON.stringify(txid)
-    }
+    if (typeof txid !== "string") txid = JSON.stringify(txid)
 
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}transaction/details/${txid}`
       )
       return response.data

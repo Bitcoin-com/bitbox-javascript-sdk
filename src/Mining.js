@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class Mining {
   constructor(restURL) {
@@ -7,7 +6,7 @@ class Mining {
 
   async getBlockTemplate(template_request) {
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${this.restURL}mining/getBlockTemplate/${template_request}`
       )
       return response.data
@@ -18,7 +17,7 @@ class Mining {
 
   async getMiningInfo() {
     try {
-      let response = await axios.get(`${this.restURL}mining/getMiningInfo`)
+      const response = await axios.get(`${this.restURL}mining/getMiningInfo`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -27,7 +26,7 @@ class Mining {
 
   async getNetworkHashps(nblocks = 120, height = 1) {
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         `${
           this.restURL
         }mining/getNetworkHashps?nblocks=${nblocks}&height=${height}`
@@ -40,11 +39,10 @@ class Mining {
 
   async submitBlock(hex, parameters) {
     let path = `${this.restURL}mining/submitBlock/${hex}`
-    if (parameters) {
-      path = `${path}?parameters=${parameters}`
-    }
+    if (parameters) path = `${path}?parameters=${parameters}`
+
     try {
-      let response = await axios.post(path)
+      const response = await axios.post(path)
       return response.data
     } catch (error) {
       throw error.response.data

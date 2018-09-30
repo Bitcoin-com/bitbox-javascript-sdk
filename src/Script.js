@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import opcodes from "bitcoin-ops"
 
@@ -9,7 +8,7 @@ class Script {
     this.multisig = {
       input: {
         encode: signatures => {
-          let sigs = []
+          const sigs = []
           signatures.forEach(sig => {
             sigs.push(sig)
           })
@@ -20,7 +19,7 @@ class Script {
       },
       output: {
         encode: (m, pubKeys) => {
-          let pks = []
+          const pks = []
           pubKeys.forEach(pubKey => {
             pks.push(pubKey)
           })
@@ -48,7 +47,7 @@ class Script {
   }
 
   encode(scriptChunks) {
-    let arr = []
+    const arr = []
     scriptChunks.forEach(chunk => {
       arr.push(chunk)
     })

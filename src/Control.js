@@ -1,4 +1,3 @@
-"use strict"
 import axios from "axios"
 class Control {
   constructor(restURL) {
@@ -7,7 +6,7 @@ class Control {
 
   async getInfo() {
     try {
-      let response = await axios.get(`${this.restURL}control/getInfo`)
+      const response = await axios.get(`${this.restURL}control/getInfo`)
       return response.data
     } catch (error) {
       throw error.response.data
@@ -16,7 +15,7 @@ class Control {
 
   async getMemoryInfo() {
     try {
-      let response = await axios.get(`${this.restURL}control/getMemoryInfo`)
+      const response = await axios.get(`${this.restURL}control/getMemoryInfo`)
       return response.data
     } catch (error) {
       throw error.response.data

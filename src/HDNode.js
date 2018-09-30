@@ -1,4 +1,3 @@
-"use strict"
 import Bitcoin from "bitcoincashjs-lib"
 import bchaddr from "bchaddrjs"
 import coininfo from "coininfo"
@@ -7,12 +6,10 @@ import bip32utils from "bip32-utils"
 class HDNode {
   fromSeed(rootSeedBuffer, network = "bitcoincash") {
     let bitcoincash
-    if (network === "bitcoincash") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    if (network === "bitcoincash") bitcoincash = coininfo.bitcoincash.main
+    else bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
     return Bitcoin.HDNode.fromSeedBuffer(
       rootSeedBuffer,
       bitcoincashBitcoinJSLib
@@ -49,23 +46,19 @@ class HDNode {
 
   fromXPriv(xpriv) {
     let bitcoincash
-    if (xpriv[0] === "x") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else if (xpriv[0] === "t") {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    if (xpriv[0] === "x") bitcoincash = coininfo.bitcoincash.main
+    else if (xpriv[0] === "t") bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
     return Bitcoin.HDNode.fromBase58(xpriv, bitcoincashBitcoinJSLib)
   }
 
   fromXPub(xpub) {
     let bitcoincash
-    if (xpub[0] === "x") {
-      bitcoincash = coininfo.bitcoincash.main
-    } else if (xpub[0] === "t") {
-      bitcoincash = coininfo.bitcoincash.test
-    }
-    let bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
+    if (xpub[0] === "x") bitcoincash = coininfo.bitcoincash.main
+    else if (xpub[0] === "t") bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
     return Bitcoin.HDNode.fromBase58(xpub, bitcoincashBitcoinJSLib)
   }
 
@@ -106,9 +99,9 @@ class HDNode {
   }
 
   createAccount(hdNodes) {
-    let arr = hdNodes.map((item, index) => {
-      return new bip32utils.Chain(item.neutered())
-    })
+    const arr = hdNodes.map(
+      (item, index) => new bip32utils.Chain(item.neutered())
+    )
     return new bip32utils.Account(arr)
   }
 

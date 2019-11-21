@@ -2,7 +2,7 @@ import * as BIP39 from "bip39"
 import * as bcl from "bitcoincashjs-lib"
 // import * as Bitcoin from "bitcoincashjs-lib"
 import { Buffer } from "buffer"
-import * as randomBytes from "randombytes"
+import randomBytes from "randombytes"
 import * as wif from "wif"
 import { Address } from "./Address"
 // TODO: convert "bitcoincashjs-lib" require to import

@@ -23,18 +23,23 @@ function sleep(ms) {
 
   await countSockets("before calling listen");
 
-  //First call to listen() which should create new connection.
+  // First call to listen() which should create new connection.
   socket.listen({"v": 3, "q": {"find": {}}},
     (message) => {
       console.log("Callback from first query invoked.");
   });
 
-  //Second call to listen() which should share connection with first call.
-  socket.listen({"v": 3, "q": {"find": {}}},
-  (message) => {
-    console.log("Callback from first query invoked.");
-  });
-  
+  // Second call to listen() which should share connection with first call.
+  // Use try catch in case this throws one of our new errors.
+  try {
+    socket.listen({"v": 3, "q": {"find": {}}},
+      (message) => {
+        console.log("Callback from first query invoked.");
+      });
+  } catch(error) {
+    console.log(`ERROR: ${error.message}`);
+  }
+    
   // listen doesn't return a promise so wait 100ms for connections to establish.
   await sleep(100);
   
@@ -52,6 +57,6 @@ function sleep(ms) {
   // exit process
   process.exit();
 
-})();
+})().catch((error)=> {console.log(`ERROR: ${error.message}`)});
 
 

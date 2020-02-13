@@ -27,17 +27,18 @@ function sleep(ms) {
   socket.listen("transactions", (message) => {
     console.log("Received a transaction.");
   });
-  
+
   // Second call to listen() which should share connection with first call.
   // Use try catch in case this throws one of our new errors.
   try {
-    socket.listen("blocks", (message) => {
-      console.log("Received a block.");
-    });
+    socket.listen({"v": 3, "q": {"find": {}}},
+      (message) => {
+        console.log("Callback from first query invoked.");
+      });
   } catch(error) {
     console.log(`ERROR: ${error.message}`);
   }
-
+    
   // listen doesn't return a promise so wait 100ms for connections to establish.
   await sleep(100);
   
@@ -48,8 +49,8 @@ function sleep(ms) {
 
   // callback from close() is short-circuited so give it 100ms to clean up.
   await sleep(100);
-
-    // check if any zombie connections remaining
+  
+  // check if any zombie connections remaining
   await countSockets("after calling close (zombie connections)");
 
   // exit process

@@ -88,7 +88,7 @@ async function sendBch() {
     transactionBuilder.addOutput(SEND_ADDR, remainder)
 
     // Generate a change address from a Mnemonic of a private key.
-    const change = changeAddrFromMnemonic(SEND_MNEMONIC)
+    const change = changeAddrFromMnemonic(SEND_MNEMONIC,NETWORK)
 
     // Generate a keypair from the change address.
     const keyPair = bitbox.HDNode.toKeyPair(change)

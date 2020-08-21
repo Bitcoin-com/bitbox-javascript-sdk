@@ -25,11 +25,18 @@ describe("#Price", (): void => {
     describe("#single currency", (): void => {
       it("should get current price for single currency", async () => {
         // Mock out data for unit test, to prevent live network call.
-        const data: any = 39229
-        const resolved: any = new Promise(r => r({ data: { price: data } }))
+        const rate: any = 265.6074
+        const time: any = 1583781799
+        const name: any = "US Dollar"
+        const currency: any = "USD"
+
+        const resolved: any = new Promise(r =>
+          r({ data: { [currency]: { name, time, rate } } })
+        )
+
         sandbox.stub(axios, "get").returns(resolved)
 
-        const result = await bitbox.Price.current("usd")
+        const result = await bitbox.Price.current(currency)
         //console.log(`result: ${JSON.stringify(result, null, 2)}`)
 
         assert.isNumber(result)

@@ -36,6 +36,16 @@ export class TransactionBuilder {
   tx: any
   private _address: Address
 
+  public static fromTransaction(transaction: any, network: string): TransactionBuilder {
+    let bitcoincash;
+    if (network === "bitcoincash" || network === "mainnet")
+      bitcoincash = coininfo.bitcoincash.main
+    else bitcoincash = coininfo.bitcoincash.test
+
+    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
+    return Bitcoin.TransactionBuilder.fromTransaction(transaction, bitcoincashBitcoinJSLib);
+  }
+  
   constructor(network: string = "mainnet") {
     let bitcoincash: BchInfo
     if (network === "mainnet") {
@@ -130,6 +140,12 @@ export class TransactionBuilder {
   }
 
   public build(): any {
+    if (this.p2shInput === true) return this.tx
+
+    return this.transaction.build()
+  }
+  
+  public buildIncomplete(): any {
     if (this.p2shInput === true) return this.tx
 
     return this.transaction.build()

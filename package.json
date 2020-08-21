@@ -35,6 +35,7 @@
     "@bitcoin-dot-com/bitcoincashjs2-lib": "^4.1.0",
     "@types/bigi": "^1.4.2",
     "@types/bip39": "^2.4.2",
+    "@types/eventsource": "^1.1.2",
     "@types/randombytes": "^2.0.0",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",

@@ -1,54 +1,70 @@
 import { BITSOCKET_URL, WS_URL } from "./BITBOX"
 import { SocketConfig } from "./interfaces/BITBOXInterfaces"
+import io from "socket.io-client"
+import EventSource from "eventsource"
 
-const io: any = require("socket.io-client")
+enum SocketType {
+  Uninitialized,
+  SocketIO,
+  BitSocket
+}
+
 export class Socket {
   socket: any
   websocketURL: string
   bitsocketURL: string
-  constructor(config: SocketConfig = {}) {
-    if (config.wsURL) {
-      // default to passed in wsURL
-      this.websocketURL = config.wsURL
-    } else if (config.restURL) {
-      // 2nd option deprecated restURL
-      this.websocketURL = config.restURL
-    } else {
-      // fallback to WS_URL
-      this.websocketURL = WS_URL
-    }
+  socketType: SocketType = SocketType.Uninitialized
 
-    if (config.bitsocketURL) {
-      this.bitsocketURL = config.bitsocketURL
-    } else {
-      this.bitsocketURL = BITSOCKET_URL
-    }
-
+  constructor(config: SocketConfig = {}) {  
+    // Order of preference: passed in wsURL, deprecated restURL, fallback WS_URL
+    this.websocketURL = config.wsURL || config.restURL || WS_URL
+    // Similar for BitSocket case
+    this.bitsocketURL = config.bitsocketURL || BITSOCKET_URL
+    // Execute callback (immediate, synchronous and unconditional)
     if (config.callback) config.callback()
+    // Note that we can't set socketType in constructor as config may contain 
+    // both socket.io and BitSocket URLs, so we need to wait for listen() before
+    // we know which type it will be.
   }
 
   public listen(query: string, cb: Function): void {
     if (query === "blocks" || query === "transactions") {
-      this.socket = io(this.websocketURL, { transports: ["websocket"] })
-      this.socket.emit(query)
-
-      if (query === "blocks") this.socket.on("blocks", (msg: any) => cb(msg))
-      else if (query === "transactions")
-        this.socket.on("transactions", (msg: any) => cb(msg))
-    } else {
-      let EventSource = require("eventsource")
-      let b64 = Buffer.from(JSON.stringify(query)).toString("base64")
-      this.socket = new EventSource(`${this.bitsocketURL}/s/${b64}`)
-      this.socket.onmessage = (msg: any) => {
-        cb(msg.data)
+      // socket.io case
+      switch (this.socketType) {
+        case SocketType.Uninitialized:
+          this.socketType = SocketType.SocketIO
+          this.socket = io(this.websocketURL, { transports: ["websocket"] })
+        case SocketType.SocketIO:
+          // Send server the event name of interest. At time of writing this is
+          // not used by the server but is left in so that server-side filtering
+          // is an option in the future.
+          this.socket.emit(query) 
+          this.socket.on(query, (msg: any) => cb(msg))
+          break;
+        case SocketType.BitSocket:
+          throw new Error("Query type not possible on a BitSocket connection.")
+      }
+    } else { 
+      // BitSocket case
+      switch (this.socketType) {
+        case SocketType.Uninitialized:
+          this.socketType = SocketType.BitSocket
+          let b64 = Buffer.from(JSON.stringify(query)).toString("base64")
+          this.socket = new EventSource(`${this.bitsocketURL}/s/${b64}`)
+          this.socket.onmessage = (msg: any) => {
+            cb(msg.data)
+          }
+          break;
+        case SocketType.BitSocket:
+          throw new Error("Only one BitSocket query can be run at a time.")
+        case SocketType.SocketIO:
+          throw new Error("Query type not possible on a SocketIO connection.")
       }
     }
   }
 
   public close(cb?: Function): void {
     this.socket.close()
-    if (cb) {
-      cb()
-    }
+    if (cb) cb()
   }
 }

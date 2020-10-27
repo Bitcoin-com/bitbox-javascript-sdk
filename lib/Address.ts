@@ -237,15 +237,29 @@ export class Address {
     network: string = "mainnet"
   ): string {
     let netParam: any
-    if (network !== "bitcoincash" && network !== "mainnet")
-      netParam = Bitcoin.networks.testnet
-
-    const regtest: boolean = network === "bchreg"
+    let isRegtest: boolean
+    switch (network) {
+      case 'mainnet':
+        netParam = Bitcoin.networks.bitcoin
+        isRegtest = false
+        break
+      case 'testnet':
+        netParam = Bitcoin.networks.testnet
+        isRegtest = false
+        break
+      case 'regtest':
+        netParam = Bitcoin.networks.testnet
+        isRegtest = true
+        break
+      default:
+        netParam = Bitcoin.networks.bitcoin
+        isRegtest = false
+    }
 
     return this.toCashAddress(
       Bitcoin.address.fromOutputScript(scriptPubKey, netParam),
       true,
-      regtest
+      isRegtest
     )
   }
 

@@ -225,6 +225,9 @@
   "p2shTestnet": [
     "bchtest:pz0qcslrqn7hr44hsszwl4lw5r6udkg6zqh2hmtpyr"
   ],
+  "p2shRegTest": [
+    "bchreg:pz0qcslrqn7hr44hsszwl4lw5r6udkg6zqdkp6gj89"
+  ],
   "mainnetXPriv": [
     {
       "xpriv": "xprvA2WwD9mk1Qd3rMjQ4ZRHvCWCj47jbXjY9Nf7npNRBmGUJngpRAvJzNpNgt7h2dDQ5huG7yFwYfz4PFJDPzkqfvBNPHnaio4yAbbUuv3EBnL",

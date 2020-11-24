@@ -1082,6 +1082,18 @@ describe("#Address", (): void => {
         })
       }
     )
+
+    fixtures.p2shRegTest.forEach(
+      (address: string): void => {
+        const p2shAddress: any = bitbox.Address.fromOutputScript(
+          scriptPubKey,
+          "regtest"
+        )
+        it(`generate regtest address from output script`, (): void => {
+          assert.equal(p2shAddress, address)
+        })
+      }
+    )
   })
 
   describe("#details", () => {
